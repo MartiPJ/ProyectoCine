@@ -1,0 +1,252 @@
+<svg viewBox="0 0 1200 2400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="2400" fill="#f5f5f5"/>
+  
+  <!-- Login Screen -->
+  <g transform="translate(50, 50)">
+    <rect width="1100" height="400" rx="10" fill="white" stroke="#ddd" stroke-width="2"/>
+    <text x="550" y="50" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle">Login Screen</text>
+    
+    <!-- Login Form -->
+    <rect x="350" y="80" width="400" height="250" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <text x="550" y="110" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle">Cine App</text>
+    
+    <!-- Username -->
+    <text x="380" y="150" font-family="Arial" font-size="14">Usuario:</text>
+    <rect x="380" y="160" width="340" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <!-- Password -->
+    <text x="380" y="210" font-family="Arial" font-size="14">Contraseña:</text>
+    <rect x="380" y="220" width="340" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <!-- Buttons -->
+    <rect x="380" y="270" width="160" height="40" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="460" y="295" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Iniciar Sesión</text>
+    
+    <rect x="560" y="270" width="160" height="40" rx="5" fill="#2ecc71" stroke="#27ae60"/>
+    <text x="640" y="295" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Crear Cuenta</text>
+  </g>
+  
+  <!-- Create Account Screen -->
+  <g transform="translate(50, 500)">
+    <rect width="1100" height="450" rx="10" fill="white" stroke="#ddd" stroke-width="2"/>
+    <text x="550" y="50" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle">Create Account Screen</text>
+    
+    <!-- Registration Form -->
+    <rect x="300" y="80" width="500" height="320" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <text x="550" y="110" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle">Crear Nueva Cuenta</text>
+    
+    <!-- Form Fields -->
+    <text x="330" y="150" font-family="Arial" font-size="14">Nombre:</text>
+    <rect x="330" y="160" width="440" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="330" y="210" font-family="Arial" font-size="14">Correo:</text>
+    <rect x="330" y="220" width="440" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="330" y="270" font-family="Arial" font-size="14">Contraseña:</text>
+    <rect x="330" y="280" width="440" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="330" y="330" font-family="Arial" font-size="14">Teléfono:</text>
+    <rect x="330" y="340" width="440" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <!-- Register Button -->
+    <rect x="450" y="390" width="200" height="40" rx="5" fill="#2ecc71" stroke="#27ae60"/>
+    <text x="550" y="415" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Registrarme</text>
+  </g>
+  
+  <!-- Admin Dashboard -->
+  <g transform="translate(50, 1000)">
+    <rect width="1100" height="600" rx="10" fill="white" stroke="#ddd" stroke-width="2"/>
+    <text x="550" y="50" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle">Admin Dashboard</text>
+    
+    <!-- Navbar -->
+    <rect x="0" y="0" width="1100" height="60" rx="10" fill="#34495e" stroke="none"/>
+    <text x="100" y="35" font-family="Arial" font-size="18" fill="white" font-weight="bold">Cine App - Admin</text>
+    <rect x="950" y="15" width="100" height="30" rx="5" fill="#e74c3c" stroke="none"/>
+    <text x="1000" y="35" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Log-out</text>
+    
+    <!-- Admin Menu -->
+    <rect x="50" y="100" width="200" height="200" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <text x="150" y="130" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">Administración</text>
+    <text x="150" y="170" font-family="Arial" font-size="14" text-anchor="middle">Crear Sala</text>
+    <text x="150" y="200" font-family="Arial" font-size="14" text-anchor="middle">Modificar Película</text>
+    <text x="150" y="230" font-family="Arial" font-size="14" text-anchor="middle">Modificar Capacidad</text>
+    <text x="150" y="260" font-family="Arial" font-size="14" text-anchor="middle">Administrar Usuarios</text>
+    
+    <!-- Cinema Room List -->
+    <rect x="300" y="100" width="750" height="450" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <text x="675" y="130" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle">Salas de Cine</text>
+    
+    <!-- Room Cards in Grid -->
+    <rect x="330" y="160" width="220" height="180" rx="5" fill="white" stroke="#ddd"/>
+    <rect x="330" y="160" width="220" height="100" rx="5" fill="#3498db"/>
+    <text x="440" y="210" font-family="Arial" font-size="40" fill="white" text-anchor="middle">🎬</text>
+    <text x="440" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Avengers: Endgame</text>
+    <text x="440" y="300" font-family="Arial" font-size="12" text-anchor="middle">Sala: Principal</text>
+    <text x="440" y="320" font-family="Arial" font-size="12" text-anchor="middle">Asientos disponibles: 120</text>
+    
+    <rect x="570" y="160" width="220" height="180" rx="5" fill="white" stroke="#ddd"/>
+    <rect x="570" y="160" width="220" height="100" rx="5" fill="#3498db"/>
+    <text x="680" y="210" font-family="Arial" font-size="40" fill="white" text-anchor="middle">🎬</text>
+    <text x="680" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Black Panther</text>
+    <text x="680" y="300" font-family="Arial" font-size="12" text-anchor="middle">Sala: VIP</text>
+    <text x="680" y="320" font-family="Arial" font-size="12" text-anchor="middle">Asientos disponibles: 80</text>
+    
+    <rect x="810" y="160" width="220" height="180" rx="5" fill="white" stroke="#ddd"/>
+    <rect x="810" y="160" width="220" height="100" rx="5" fill="#3498db"/>
+    <text x="920" y="210" font-family="Arial" font-size="40" fill="white" text-anchor="middle">🎬</text>
+    <text x="920" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Jurassic World</text>
+    <text x="920" y="300" font-family="Arial" font-size="12" text-anchor="middle">Sala: Familiar</text>
+    <text x="920" y="320" font-family="Arial" font-size="12" text-anchor="middle">Asientos disponibles: 100</text>
+    
+    <rect x="330" y="360" width="220" height="180" rx="5" fill="white" stroke="#ddd"/>
+    <rect x="330" y="360" width="220" height="100" rx="5" fill="#3498db"/>
+    <text x="440" y="410" font-family="Arial" font-size="40" fill="white" text-anchor="middle">🎬</text>
+    <text x="440" y="480" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Toy Story 4</text>
+    <text x="440" y="500" font-family="Arial" font-size="12" text-anchor="middle">Sala: Infantil</text>
+    <text x="440" y="520" font-family="Arial" font-size="12" text-anchor="middle">Asientos disponibles: 90</text>
+    
+    <rect x="570" y="360" width="220" height="180" rx="5" fill="white" stroke="#ddd"/>
+    <rect x="570" y="360" width="220" height="100" rx="5" fill="#3498db"/>
+    <text x="680" y="410" font-family="Arial" font-size="40" fill="white" text-anchor="middle">🎬</text>
+    <text x="680" y="480" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle">Star Wars</text>
+    <text x="680" y="500" font-family="Arial" font-size="12" text-anchor="middle">Sala: Premium</text>
+    <text x="680" y="520" font-family="Arial" font-size="12" text-anchor="middle">Asientos disponibles: 60</text>
+  </g>
+  
+  <!-- Create Cinema Room Screen -->
+  <g transform="translate(50, 1650)">
+    <rect width="1100" height="350" rx="10" fill="white" stroke="#ddd" stroke-width="2"/>
+    <text x="550" y="50" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle">Create Cinema Room</text>
+    
+    <!-- Navbar -->
+    <rect x="0" y="0" width="1100" height="60" rx="10" fill="#34495e" stroke="none"/>
+    <text x="100" y="35" font-family="Arial" font-size="18" fill="white" font-weight="bold">Cine App - Admin</text>
+    <rect x="950" y="15" width="100" height="30" rx="5" fill="#e74c3c" stroke="none"/>
+    <text x="1000" y="35" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Log-out</text>
+    
+    <!-- Form -->
+    <text x="100" y="100" font-family="Arial" font-size="18" font-weight="bold">Crear Nueva Sala</text>
+    
+    <text x="100" y="140" font-family="Arial" font-size="14">Nombre de la Sala:</text>
+    <rect x="100" y="150" width="300" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="450" y="140" font-family="Arial" font-size="14">Capacidad (Filas):</text>
+    <rect x="450" y="150" width="120" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="600" y="140" font-family="Arial" font-size="14">Capacidad (Columnas):</text>
+    <rect x="600" y="150" width="120" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="100" y="200" font-family="Arial" font-size="14">Título de la Película:</text>
+    <rect x="100" y="210" width="300" height="30" rx="5" fill="white" stroke="#bbb"/>
+    
+    <text x="450" y="200" font-family="Arial" font-size="14">Imagen del Póster:</text>
+    <rect x="450" y="210" width="270" height="90" rx="5" fill="white" stroke="#bbb" stroke-dasharray="5,5"/>
+    <text x="585" y="260" font-family="Arial" font-size="12" text-anchor="middle">Arrastrar imagen aquí o hacer clic</text>
+    
+    <text x="750" y="200" font-family="Arial" font-size="14">Descripción:</text>
+    <rect x="750" y="210" width="300" height="90" rx="5" fill="white" stroke="#bbb"/>
+    
+    <rect x="500" y="330" width="120" height="40" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="560" y="355" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Crear Sala</text>
+  </g>
+  
+  <!-- Seats Reservation Screen -->
+  <g transform="translate(50, 2050)">
+    <rect width="1100" height="300" rx="10" fill="white" stroke="#ddd" stroke-width="2"/>
+    <text x="550" y="50" font-family="Arial" font-size="24" font-weight="bold" text-anchor="middle">Seats Reservation</text>
+    
+    <!-- Navbar -->
+    <rect x="0" y="0" width="1100" height="60" rx="10" fill="#34495e" stroke="none"/>
+    <text x="100" y="35" font-family="Arial" font-size="18" fill="white" font-weight="bold">Cine App</text>
+    <rect x="950" y="15" width="100" height="30" rx="5" fill="#e74c3c" stroke="none"/>
+    <text x="1000" y="35" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Log-out</text>
+    
+    <!-- Movie Info -->
+    <rect x="50" y="80" width="300" height="200" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <rect x="70" y="100" width="100" height="140" rx="5" fill="#3498db"/>
+    <text x="120" y="170" font-family="Arial" font-size="30" fill="white" text-anchor="middle">🎬</text>
+    <text x="230" y="120" font-family="Arial" font-size="16" font-weight="bold">Avengers: Endgame</text>
+    <text x="230" y="150" font-family="Arial" font-size="14">Sala: Principal</text>
+    <text x="230" y="180" font-family="Arial" font-size="14">Fecha: 19/04/2025</text>
+    <text x="230" y="210" font-family="Arial" font-size="14">Hora: 18:30</text>
+    
+    <!-- Date Selection -->
+    <rect x="370" y="80" width="680" height="50" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <text x="390" y="110" font-family="Arial" font-size="14">Seleccione fecha:</text>
+    <rect x="510" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="525" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">17</text>
+    <rect x="550" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="565" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">18</text>
+    <rect x="590" y="90" width="30" height="30" rx="5" fill="#e74c3c" stroke="#c0392b"/>
+    <text x="605" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">19</text>
+    <rect x="630" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="645" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">20</text>
+    <rect x="670" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="685" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">21</text>
+    <rect x="710" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="725" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">22</text>
+    <rect x="750" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="765" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">23</text>
+    <rect x="790" y="90" width="30" height="30" rx="5" fill="#3498db" stroke="#2980b9"/>
+    <text x="805" y="110" font-family="Arial" font-size="12" fill="white" text-anchor="middle">24</text>
+    
+    <!-- Seats Grid -->
+    <rect x="370" y="140" width="680" height="140" rx="5" fill="#f9f9f9" stroke="#ddd"/>
+    <rect x="640" y="150" width="140" height="20" rx="5" fill="#34495e" stroke="none"/>
+    <text x="710" y="165" font-family="Arial" font-size="12" fill="white" text-anchor="middle">PANTALLA</text>
+    
+    <!-- Seats -->
+    <g transform="translate(450, 180)">
+      <!-- Row 1 -->
+      <rect x="0" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="30" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="60" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="90" y="0" width="20" height="20" rx="3" fill="#e74c3c"/>
+      <rect x="120" y="0" width="20" height="20" rx="3" fill="#e74c3c"/>
+      <rect x="150" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="180" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="210" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="240" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="270" y="0" width="20" height="20" rx="3" fill="#2ecc71"/>
+      
+      <!-- Row 2 -->
+      <rect x="0" y="30" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="30" y="30" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="60" y="30" width="20" height="20" rx="3" fill="#f39c12"/>
+      <rect x="90" y="30" width="20" height="20" rx="3" fill="#f39c12"/>
+      <rect x="120" y="30" width="20" height="20" rx="3" fill="#e74c3c"/>
+      <rect x="150" y="30" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="180" y="30" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="210" y="30" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="240" y="30" width="20" height="20" rx="3" fill="#e74c3c"/>
+      <rect x="270" y="30" width="20" height="20" rx="3" fill="#2ecc71"/>
+      
+      <!-- Row 3 -->
+      <rect x="0" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="30" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="60" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="90" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="120" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="150" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="180" y="60" width="20" height="20" rx="3" fill="#f39c12"/>
+      <rect x="210" y="60" width="20" height="20" rx="3" fill="#f39c12"/>
+      <rect x="240" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <rect x="270" y="60" width="20" height="20" rx="3" fill="#2ecc71"/>
+      
+      <!-- Legend -->
+      <rect x="500" y="90" width="20" height="20" rx="3" fill="#2ecc71"/>
+      <text x="530" y="105" font-family="Arial" font-size="12">Disponible</text>
+      
+      <rect x="600" y="90" width="20" height="20" rx="3" fill="#e74c3c"/>
+      <text x="630" y="105" font-family="Arial" font-size="12">Reservado</text>
+      
+      <rect x="700" y="90" width="20" height="20" rx="3" fill="#f39c12"/>
+      <text x="730" y="105" font-family="Arial" font-size="12">Seleccionado</text>
+    </g>
+    
+    <!-- Confirm Button -->
+    <rect x="900" y="230" width="150" height="40" rx="5" fill="#2ecc71" stroke="#27ae60"/>
+    <text x="975" y="255" font-family="Arial" font-size="14" fill="white" text-anchor="middle">Confirmar Reserva</text>
+  </g>
+</svg>

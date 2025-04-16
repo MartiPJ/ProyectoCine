@@ -19,7 +19,7 @@ const swaggerOptions = {
         },
         servers: [{ url: 'http://localhost:3000' }],
     },
-    apis: ['server.js'], // Puedes mover la documentación a otro archivo luego
+    apis: ['./routes/authRoutes.js'], // Puedes mover la documentación a otro archivo luego
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
