@@ -58,7 +58,7 @@ async function modificarSala(req, res) {
 async function verSalas(req, res) {
     try {
         const salas = await userModel.verSalas();
-        res.status(200).json(salas);
+        res.status(200).json([salas]);
     } catch (err) {
         res.status(500).json({ error: 'Error al obtener las salas', details: err.message });
     }
