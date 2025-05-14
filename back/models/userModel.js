@@ -41,7 +41,8 @@ async function verSalas() {
     try {
         const sql = 'SELECT * FROM sala';
         const result = await conn.query(sql);
-        return result[0];
+        console.log("Resultado de la consulta SQL:", result);
+        return result;
     } finally {
         conn.release();
     }   

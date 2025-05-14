@@ -2,17 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
+// Components
 import Login from './components/Login';
+import Register from './components/Register'; 
+import Navbar from './components/Navbar';
+import MovieList from './components/MovieList';
+import CreateRoom from './components/CreateRoom';
+import ModifyRoom from './components/ModifyRoom';
+import SeatReservation from './components/SeatReservation';
+import ManageUsers from './components/ManageUsers';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [user, setUser] = useState(null);
-
+  
+  // Check if user is already logged in
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
-
+    
     if (token && userData) {
       setIsAuth(true);
       setUser(JSON.parse(userData));
@@ -33,27 +42,54 @@ function App() {
     localStorage.removeItem('user');
   };
 
-  // Componente temporal para representar un home privado
-  const Home = () => (
-    <div>
-      <h2>Bienvenido, {user?.name || 'Usuario'} 👋</h2>
-      <button onClick={handleLogout}>Cerrar sesión</button>
-    </div>
-  );
-
   return (
     <Router>
+      {isAuth && <Navbar user={user} onLogout={handleLogout} />}
       <div className="container">
         <Routes>
-          <Route 
-            path="/login" 
-            element={!isAuth ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} 
-          />
+          <Route path="/login" element={!isAuth ? <Login onLogin={handleLogin} /> : <Navigate to="/" />} />
+          <Route path="/register" element={!isAuth ? <Register /> : <Navigate to="/" />} />
+          
+          {/* Protected routes for all authenticated users */}
           <Route 
             path="/" 
             element={
               <ProtectedRoute isAuth={isAuth}>
-                <Home />
+                <MovieList />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/reservation/:salaId" 
+            element={
+              <ProtectedRoute isAuth={isAuth}>
+                <SeatReservation />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Admin only routes */}
+          <Route 
+            path="/admin/create-room" 
+            element={
+              <ProtectedRoute isAuth={isAuth && user?.rol === 'administrador'}>
+                <CreateRoom />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/modify-room/:id" 
+            element={
+              <ProtectedRoute isAuth={isAuth && user?.rol === 'administrador'}>
+                <ModifyRoom />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/admin/manage-users" 
+            element={
+              <ProtectedRoute isAuth={isAuth && user?.rol === 'administrador'}>
+                <ManageUsers />
               </ProtectedRoute>
             } 
           />
