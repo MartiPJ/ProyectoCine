@@ -79,6 +79,8 @@ const authController = require('../controllers/authController');
  */
 router.post('/usuarios', authController.registrarUsuario);
 
+router.get('/usuarios', authController.verUsuarios);
+
 /**
  * @swagger
  * /login:
@@ -284,7 +286,7 @@ router.put('/sala/:id', authController.modificarSala);
  *                     type: integer
  *                     description: Capacidad de columnas de la sala
  */
-router.get('/salas', authController.verSalas);
+router.get('/salas/:id_sala?', authController.verSalas);
 
 /**
  * @swagger
@@ -325,6 +327,8 @@ router.get('/salas', authController.verSalas);
  */
 router.post('/reservarSala', authController.reservarSala);
 
+router.get('/reservaciones/:id_reservacion?', authController.verReservaciones);
+
 /**
  * @swagger
  * /pelicula:
@@ -352,6 +356,8 @@ router.post('/reservarSala', authController.reservarSala);
  *                 example: Pelicula de aventura hecha por Robert
  */
 router.post('/pelicula', authController.ingresarPelicula)
+
+router.get('/peliculas', authController.verPeliculas)
 
 /**
  * @swagger
@@ -387,6 +393,8 @@ router.post('/pelicula', authController.ingresarPelicula)
  */
 router.post('/funcion', authController.ingresarFuncion)
 
+router.get('/funciones/:id_funcion?', authController.verFunciones);
+
 /**
  * @swagger
  * /asiento:
@@ -415,6 +423,8 @@ router.post('/funcion', authController.ingresarFuncion)
  */
 router.post('/asiento', authController.ingresarAsiento)
 
+router.get('/asientos/:id_sala?', authController.verAsientos);
+
 /**
  * @swagger
  * /asientoReservado:
@@ -438,4 +448,8 @@ router.post('/asiento', authController.ingresarAsiento)
  *                 example: 2
  */
 router.post('/asientoReservado', authController.ingresarAsientoReservado)
+
+router.get('/asientosReservados/:id_funcion?', authController.verAsientosReservados)
+
+router.get('/funciones/sala/:id_sala?', authController.verFuncionesPorSala)
 module.exports = router;

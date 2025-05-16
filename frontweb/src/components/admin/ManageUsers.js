@@ -5,11 +5,13 @@ const ManageUsers = () => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [formData, setFormData] = useState({
-        nombre: '',
-        email: '',
-        password: '',
-        rol: 'usuario'
-    });
+    nombre: '',    
+    contrasena: '',
+    correo: '',
+    telefono: '',
+    rol: 'usuario'    
+});
+
 
     const [isEditing, setIsEditing] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -26,7 +28,8 @@ const ManageUsers = () => {
             setLoading(true);
             // Este endpoint es hipotético, ajústalo según tu API
             const response = await axios.get('http://localhost:4000/usuarios');
-            setUsers(response.data.usuarios || []);
+            setUsers(response.data || []);
+
         } catch (err) {
             console.error('Error al cargar usuarios:', err);
             setError('Error al cargar la lista de usuarios');
@@ -46,8 +49,9 @@ const ManageUsers = () => {
     const resetForm = () => {
         setFormData({
             nombre: '',
-            email: '',
-            password: '',
+            contrasena: '',
+            correo: '',
+            telefono: '',
             rol: 'usuario'
         });
         setSelectedUser(null);
@@ -58,8 +62,9 @@ const ManageUsers = () => {
         setSelectedUser(user);
         setFormData({
             nombre: user.nombre || '',
-            email: user.email || '',
-            password: '', // No mostramos la contraseña actual por seguridad
+            contrasena: '', // No mostramos la contraseña actual por seguridad
+            correo: user.email || '',
+            telefono: user.telefono || '',
             rol: user.rol || 'usuario'
         });
         setIsEditing(true);
@@ -79,6 +84,11 @@ const ManageUsers = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
             setError('El formato del email no es válido');
+            return false;
+        }
+
+        if (!formData.telefono || isNaN(formData.telefono)) {
+            setError("El teléfono es obligatorio y debe ser un número");
             return false;
         }
 
@@ -199,12 +209,28 @@ const ManageUsers = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="email" className="form-label">Email</label>
+                            <label htmlFor="contrasena" className="form-label">
+                                {isEditing ? 'Contraseña (dejar en blanco para mantener la actual)' : 'Contraseña'}
+                            </label>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
+                                type="contrasena"
+                                id="contrasena"
+                                name="contrasena"
+                                value={formData.contrasena}
+                                onChange={handleInputChange}
+                                className="form-input"
+                                required={!isEditing}
+                                disabled={loading}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label htmlFor="correo" className="form-label">Correo</label>
+                            <input
+                                type="correo"
+                                id="correo"
+                                name="correo"
+                                value={formData.correo}
                                 onChange={handleInputChange}
                                 className="form-input"
                                 required
@@ -213,17 +239,15 @@ const ManageUsers = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="password" className="form-label">
-                                {isEditing ? 'Contraseña (dejar en blanco para mantener la actual)' : 'Contraseña'}
-                            </label>
+                            <label htmlFor="telefono" className="form-label">Telefono</label>
                             <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                value={formData.password}
+                                type="telefono"
+                                id="telefono"
+                                name="telefono"
+                                value={formData.telefono}
                                 onChange={handleInputChange}
                                 className="form-input"
-                                required={!isEditing}
+                                required
                                 disabled={loading}
                             />
                         </div>
@@ -281,16 +305,19 @@ const ManageUsers = () => {
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Email</th>
+                                        <th>Telefono</th>
                                         <th>Rol</th>
-                                        <th>Acciones</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {users.map(user => (
                                         <tr key={user._id} className={selectedUser?._id === user._id ? 'selected' : ''}>
                                             <td>{user.nombre}</td>
-                                            <td>{user.email}</td>
+                                            <td>{user.correo}</td> 
+                                            <td>{user.telefono}</td>                                           
                                             <td>{user.rol === 'administrador' ? 'Administrador' : 'Usuario'}</td>
+                                            
                                             <td>
                                                 <button
                                                     className="btn btn-outline btn-sm"

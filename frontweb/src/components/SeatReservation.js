@@ -1,404 +1,245 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const SeatReservation = () => {
-    const [salas, setSalas] = useState([]);
-    const [funciones, setFunciones] = useState([]);
+    const { salaId, funcionId } = useParams();
+    const navigate = useNavigate();
+    const [sala, setSala] = useState(null);
+    const [funcion, setFuncion] = useState(null);
     const [asientos, setAsientos] = useState([]);
-    const [selectedSala, setSelectedSala] = useState('');
-    const [selectedFuncion, setSelectedFuncion] = useState('');
+    const [asientosReservados, setAsientosReservados] = useState([]);
     const [selectedAsientos, setSelectedAsientos] = useState([]);
-    const [reservedSeats, setReservedSeats] = useState([]);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [loading, setLoading] = useState(true);
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [success, setSuccess] = useState(false);
-
-    // Información del cliente para la reserva
-    const [clientData, setClientData] = useState({
-        nombre: '',
-        email: '',
-        telefono: ''
-    });
-
-    // Obtener las salas al cargar el componente
     useEffect(() => {
-        fetchSalas();
-    }, []);
-
-    // Obtener funciones cuando se selecciona una sala
-    useEffect(() => {
-        if (selectedSala) {
-            fetchFunciones();
-        } else {
-            setFunciones([]);
-        }
-    }, [selectedSala]);
-
-    // Obtener asientos cuando se selecciona una función
-    useEffect(() => {
-        if (selectedFuncion) {
-            fetchAsientos();
-            fetchReservedSeats();
-        } else {
-            setAsientos([]);
-            setReservedSeats([]);
-        }
-    }, [selectedFuncion]);
-
-    const fetchSalas = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get('http://localhost:4000/salas');
-            setSalas(response.data.salas || []);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error al cargar las salas:', err);
-            setError('Error al cargar las salas disponibles');
-            setLoading(false);
-        }
-    };
-
-    const fetchFunciones = async () => {
-        try {
-            setLoading(true);
-            // Este endpoint es hipotético, ajústalo según tu API
-            const response = await axios.get(`http://localhost:4000/funciones?salaId=${selectedSala}`);
-            setFunciones(response.data.funciones || []);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error al cargar las funciones:', err);
-            setError('Error al cargar las funciones disponibles');
-            setLoading(false);
-        }
-    };
-
-    const fetchAsientos = async () => {
-        try {
-            setLoading(true);
-            // Este endpoint es hipotético, ajústalo según tu API
-            const response = await axios.get(`http://localhost:4000/asientos?funcionId=${selectedFuncion}`);
-            setAsientos(response.data.asientos || []);
-            setLoading(false);
-        } catch (err) {
-            console.error('Error al cargar los asientos:', err);
-            setError('Error al cargar los asientos disponibles');
-            setLoading(false);
-        }
-    };
-
-    const fetchReservedSeats = async () => {
-        try {
-            // Este endpoint es hipotético, ajústalo según tu API
-            const response = await axios.get(`http://localhost:4000/asientosReservados?funcionId=${selectedFuncion}`);
-            setReservedSeats(response.data.asientosReservados?.map(a => a.asientoId) || []);
-        } catch (err) {
-            console.error('Error al cargar los asientos reservados:', err);
-        }
-    };
-
-    const handleSalaChange = (e) => {
-        setSelectedSala(e.target.value);
-        setSelectedFuncion('');
-        setSelectedAsientos([]);
-    };
-
-    const handleFuncionChange = (e) => {
-        setSelectedFuncion(e.target.value);
-        setSelectedAsientos([]);
-    };
-
-    const handleAsientoClick = (asientoId) => {
-        // Verificar si el asiento ya está reservado
-        if (reservedSeats.includes(asientoId)) {
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
             return;
         }
 
-        setSelectedAsientos(prev => {
-            // Si ya está seleccionado, lo quitamos
-            if (prev.includes(asientoId)) {
-                return prev.filter(id => id !== asientoId);
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                console.log("funcionId:", funcionId);
+                console.log("Salaid:", salaId);
+                // Fetch sala details
+                const salaResponse = await axios.get(`http://localhost:4000/salas/${salaId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setSala(salaResponse.data);
+
+                
+                // Fetch function details
+                const funcionResponse = await axios.get(`http://localhost:4000/funciones/${funcionId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setFuncion(funcionResponse.data);
+
+                // Fetch seats for this room
+                const asientosResponse = await axios.get(`http://localhost:4000/asientos/${salaId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setAsientos(asientosResponse.data);
+
+                // Fetch reserved seats for this function
+                const reservadosResponse = await axios.get(`http://localhost:4000/asientosReservados/${funcionId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                setAsientosReservados(reservadosResponse.data);
+
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching data:', err);
+                setError('Error cargando la información. Por favor intente de nuevo.');
+                setLoading(false);
             }
-            // Si no, lo añadimos
-            return [...prev, asientoId];
+        };
+
+        fetchData();
+    }, [salaId, funcionId, navigate]);
+
+    // Check if a seat is reserved
+    const isReserved = (asientoId) => {
+        return asientosReservados.some(reservado => reservado.id_asiento === asientoId);
+    };
+
+    // Toggle seat selection
+    const toggleSeatSelection = (asientoId) => {
+        if (isReserved(asientoId)) {
+            return; // Can't select reserved seats
+        }
+
+        setSelectedAsientos(prevSelected => {
+            if (prevSelected.includes(asientoId)) {
+                return prevSelected.filter(id => id !== asientoId);
+            } else {
+                return [...prevSelected, asientoId];
+            }
         });
     };
 
-    const handleClientDataChange = (e) => {
-        const { name, value } = e.target;
-        setClientData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const validateForm = () => {
-        if (!selectedSala) {
-            setError('Debes seleccionar una sala');
-            return false;
-        }
-
-        if (!selectedFuncion) {
-            setError('Debes seleccionar una función');
-            return false;
-        }
-
+    // Handle reservation submission
+    const handleReservation = async () => {
         if (selectedAsientos.length === 0) {
-            setError('Debes seleccionar al menos un asiento');
-            return false;
-        }
-
-        if (!clientData.nombre.trim()) {
-            setError('El nombre es obligatorio');
-            return false;
-        }
-
-        if (!clientData.email.trim()) {
-            setError('El email es obligatorio');
-            return false;
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(clientData.email)) {
-            setError('El formato del email no es válido');
-            return false;
-        }
-
-        return true;
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(null);
-        setSuccess(false);
-
-        if (!validateForm()) {
+            setError('Por favor seleccione al menos un asiento');
             return;
         }
 
         try {
-            setLoading(true);
+            const userId = JSON.parse(localStorage.getItem('user')).id_usuario;
+            const token = localStorage.getItem('token');
 
-            // Preparar los datos para la reserva
-            const reservaData = {
-                funcionId: selectedFuncion,
-                asientos: selectedAsientos,
-                cliente: clientData
-            };
-
-            // Enviar la solicitud de reserva
-            await axios.post('http://localhost:4000/reservarSala', reservaData);
-
-            setSuccess(true);
-            setSelectedAsientos([]);
-            setClientData({
-                nombre: '',
-                email: '',
-                telefono: ''
+            // Create a reservation
+            const reservationResponse = await axios.post('http://localhost:4000/reservarSala', {
+                id_funcion: funcionId,
+                id_usuario: userId,
+                fecha: new Date().toISOString().split('T')[0]
+            }, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
-            // Actualizar los asientos reservados
-            fetchReservedSeats();
+            const reservationId = reservationResponse.data.id_reservacion;
+
+            // Reserve each selected seat
+            for (const asientoId of selectedAsientos) {
+                await axios.post('http://localhost:4000/asientoReservado', {
+                    id_reservacion: reservationId,
+                    id_asiento: asientoId
+                }, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+            }
+
+            setSuccess('¡Reserva realizada con éxito!');
+            setSelectedAsientos([]);
+
+            // Refresh reserved seats list
+            const reservadosResponse = await axios.get(`http://localhost:4000/asientosReservados/${funcionId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            setAsientosReservados(reservadosResponse.data);
+
+            // Redirect to confirmation page after 2 seconds
+            setTimeout(() => {
+                navigate('/reserva-confirmada');
+            }, 2000);
 
         } catch (err) {
-            console.error('Error al realizar la reserva:', err);
-            setError(err.response?.data?.mensaje || 'Error al realizar la reserva. Intenta nuevamente.');
-        } finally {
-            setLoading(false);
+            console.error('Error making reservation:', err);
+            setError(err.response?.data?.message || 'Error al realizar la reserva');
         }
     };
 
-    // Renderizar la cuadrícula de asientos según la configuración de la sala
+    if (loading) {
+        return <div className="loading">Cargando...</div>;
+    }
+
+    if (!sala || !funcion) {
+        return <div className="error">No se encontró la información de la sala o función</div>;
+    }
+
+    // Create seat grid based on room dimensions
     const renderSeats = () => {
-        if (!asientos.length) return null;
+        const rows = [];
 
-        // Determinar el número de filas y columnas para la sala
-        const filas = Math.max(...asientos.map(a => a.fila)) || 0;
-        const columnas = Math.max(...asientos.map(a => a.columna)) || 0;
+        for (let fila = 1; fila <= sala.capacidad_filas; fila++) {
+            const rowSeats = [];
 
-        // Crear una matriz para la representación visual
-        const seatMap = Array(filas).fill().map(() => Array(columnas).fill(null));
+            for (let columna = 1; columna <= sala.capacidad_columnas; columna++) {
+                // Find the seat in the asientos array
+                const asiento = asientos.find(a => a.fila === fila && a.columna === columna);
 
-        // Llenar la matriz con los IDs de los asientos
-        asientos.forEach(asiento => {
-            if (asiento.fila > 0 && asiento.columna > 0) {
-                seatMap[asiento.fila - 1][asiento.columna - 1] = asiento;
-            }
-        });
+                if (asiento) {
+                    const isReservedSeat = isReserved(asiento.id_asiento);
+                    const isSelected = selectedAsientos.includes(asiento.id_asiento);
 
-        return (
-            <div className="seat-container" style={{ gridTemplateColumns: `repeat(${columnas}, 1fr)` }}>
-                {seatMap.flat().map((asiento, index) => {
-                    if (!asiento) return <div key={`empty-${index}`} style={{ width: '40px', height: '40px' }}></div>;
-
-                    const isReserved = reservedSeats.includes(asiento._id);
-                    const isSelected = selectedAsientos.includes(asiento._id);
-
-                    let seatClass = 'seat ';
-                    if (isReserved) seatClass += 'seat-reserved';
-                    else if (isSelected) seatClass += 'seat-selected';
-                    else seatClass += 'seat-available';
-
-                    return (
+                    rowSeats.push(
                         <div
-                            key={asiento._id}
-                            className={seatClass}
-                            onClick={() => handleAsientoClick(asiento._id)}
-                            title={`Fila ${asiento.fila}, Columna ${asiento.columna}`}
-                        >
-                            {asiento.numero || `${asiento.fila}-${asiento.columna}`}
-                        </div>
+                            key={`${fila}-${columna}`}
+                            className={`seat ${isReservedSeat ? 'reserved' : ''} ${isSelected ? 'selected' : ''}`}
+                            onClick={() => toggleSeatSelection(asiento.id_asiento)}
+                        />
                     );
-                })}
-            </div>
-        );
+                } else {
+                    // Placeholder for seats not in the database
+                    rowSeats.push(
+                        <div key={`${fila}-${columna}`} className="seat seat-placeholder" />
+                    );
+                }
+            }
+
+            rows.push(
+                <div key={`row-${fila}`} className="seat-row">
+                    {rowSeats}
+                </div>
+            );
+        }
+
+        return rows;
     };
 
     return (
-        <div className="container">
-            <h2 className="text-center mb-4">Reserva de Asientos</h2>
-
-            {error && (
-                <div className="alert alert-error">
-                    <p>{error}</p>
+        <div className="seat-reservation-container">
+            <div className="movie-details">
+                <div className="movie-poster">
+                    {sala.imagen_poster && (
+                        <img
+                            src={`http://localhost:4000/uploads/${sala.imagen_poster}`}
+                            alt="Poster"
+                        />
+                    )}
                 </div>
-            )}
-
-            {success && (
-                <div className="alert alert-success">
-                    <p>¡Tu reserva ha sido realizada exitosamente!</p>
+                <div className="movie-info">
+                    <h2>{funcion.titulo_pelicula}</h2>
+                    <p>Sala: {sala.nombre_sala}</p>
+                    <p>Fecha: {new Date(funcion.fecha).toLocaleDateString()}</p>
+                    <p>Hora: {funcion.hora}</p>
                 </div>
-            )}
+            </div>
 
-            <form onSubmit={handleSubmit} className="form-container">
-                <div className="form-group">
-                    <label htmlFor="sala" className="form-label">Seleccionar Sala</label>
-                    <select
-                        id="sala"
-                        value={selectedSala}
-                        onChange={handleSalaChange}
-                        className="form-select"
-                        disabled={loading}
-                    >
-                        <option value="">-- Selecciona una sala --</option>
-                        {salas.map(sala => (
-                            <option key={sala._id} value={sala._id}>
-                                {sala.nombre}
-                            </option>
-                        ))}
-                    </select>
+            {error && <div className="error-message">{error}</div>}
+            {success && <div className="success-message">{success}</div>}
+
+            <div className="seat-selection-container">
+                <div className="screen">PANTALLA</div>
+
+                <div className="seats-container">
+                    {renderSeats()}
                 </div>
 
-                {selectedSala && (
-                    <div className="form-group">
-                        <label htmlFor="funcion" className="form-label">Seleccionar Función</label>
-                        <select
-                            id="funcion"
-                            value={selectedFuncion}
-                            onChange={handleFuncionChange}
-                            className="form-select"
-                            disabled={loading || !funciones.length}
-                        >
-                            <option value="">-- Selecciona una función --</option>
-                            {funciones.map(funcion => (
-                                <option key={funcion._id} value={funcion._id}>
-                                    {funcion.pelicula?.titulo || 'Película'} - {new Date(funcion.fecha).toLocaleDateString()} {funcion.hora}
-                                </option>
-                            ))}
-                        </select>
-                        {funciones.length === 0 && selectedSala && !loading && (
-                            <p className="mt-2 text-gray-dark">No hay funciones disponibles para esta sala</p>
-                        )}
+                <div className="seat-legend">
+                    <div className="legend-item">
+                        <div className="seat"></div>
+                        <span>Disponible</span>
                     </div>
-                )}
+                    <div className="legend-item">
+                        <div className="seat selected"></div>
+                        <span>Seleccionado</span>
+                    </div>
+                    <div className="legend-item">
+                        <div className="seat reserved"></div>
+                        <span>Reservado</span>
+                    </div>
+                </div>
 
-                {selectedFuncion && (
-                    <>
-                        <div className="form-group">
-                            <label className="form-label">Selecciona tus asientos:</label>
-                            <p className="mb-2">
-                                <span className="mr-3">
-                                    <span className="seat seat-available" style={{ display: 'inline-block', width: '20px', height: '20px', marginRight: '5px' }}></span>
-                                    Disponible
-                                </span>
-                                <span className="mr-3">
-                                    <span className="seat seat-selected" style={{ display: 'inline-block', width: '20px', height: '20px', marginRight: '5px' }}></span>
-                                    Seleccionado
-                                </span>
-                                <span>
-                                    <span className="seat seat-reserved" style={{ display: 'inline-block', width: '20px', height: '20px', marginRight: '5px' }}></span>
-                                    Reservado
-                                </span>
-                            </p>
+                <div className="selected-seats-summary">
+                    <p>Asientos seleccionados: {selectedAsientos.length}</p>
+                    <p>Total: ${(selectedAsientos.length * funcion.precio).toFixed(2)}</p>
 
-                            <div className="mb-4">
-                                <div className="text-center mb-3 p-2" style={{ backgroundColor: '#333', color: 'white', borderRadius: '4px' }}>
-                                    PANTALLA
-                                </div>
-                                {renderSeats()}
-                            </div>
-
-                            {selectedAsientos.length > 0 && (
-                                <p>Asientos seleccionados: {selectedAsientos.length}</p>
-                            )}
-                        </div>
-
-                        <div className="form-group">
-                            <h4 className="mb-3">Información del Cliente</h4>
-                            <div className="form-group">
-                                <label htmlFor="nombre" className="form-label">Nombre completo</label>
-                                <input
-                                    type="text"
-                                    id="nombre"
-                                    name="nombre"
-                                    value={clientData.nombre}
-                                    onChange={handleClientDataChange}
-                                    className="form-input"
-                                    required
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="email" className="form-label">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={clientData.email}
-                                    onChange={handleClientDataChange}
-                                    className="form-input"
-                                    required
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            <div className="form-group">
-                                <label htmlFor="telefono" className="form-label">Teléfono (opcional)</label>
-                                <input
-                                    type="tel"
-                                    id="telefono"
-                                    name="telefono"
-                                    value={clientData.telefono}
-                                    onChange={handleClientDataChange}
-                                    className="form-input"
-                                    disabled={loading}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="form-group">
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                                disabled={loading || selectedAsientos.length === 0}
-                            >
-                                {loading ? 'Procesando...' : 'Confirmar Reserva'}
-                            </button>
-                        </div>
-                    </>
-                )}
-            </form>
+                    <button
+                        className="btn-primary"
+                        onClick={handleReservation}
+                        disabled={selectedAsientos.length === 0}
+                    >
+                        Confirmar Reserva
+                    </button>
+                </div>
+            </div>
         </div>
     );
 };

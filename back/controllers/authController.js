@@ -20,21 +20,42 @@ async function registrarUsuario(req, res) {
     }
 }
 
+//funcion para ver usuarios
+async function verUsuarios(req, res) {
+    try {
+        const usuarios = await userModel.verUsuarios();
+        res.status(200).json(usuarios);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener los usuarios', details: err.message });
+    }
+}
+
 //función para registrar una sala
 async function registrarSala(req, res) {
     try {
-        const { nombre, capacidad_filas, capacidad_columnas } = req.body;
-        if (!nombre || !capacidad_filas || !capacidad_columnas ) {
+        let { nombre, capacidad_filas, capacidad_columnas } = req.body;
+
+        if (!nombre || !capacidad_filas || !capacidad_columnas) {
             return res.status(400).json({ error: 'Faltan datos requeridos' });
         }
 
-        const id = await userModel.crearSala({ nombre,  capacidad_filas, capacidad_columnas });
+        // Convertir a enteros
+        capacidad_filas = parseInt(capacidad_filas, 10);
+        capacidad_columnas = parseInt(capacidad_columnas, 10);
+
+        // Validar que sí son números válidos
+        if (isNaN(capacidad_filas) || isNaN(capacidad_columnas)) {
+            return res.status(400).json({ error: 'Capacidades deben ser números válidos' });
+        }
+
+        const id = await userModel.crearSala({ nombre, capacidad_filas, capacidad_columnas });
 
         res.status(201).json({ message: 'Sala creada', id });
     } catch (err) {
         res.status(500).json({ error: 'Error al crear la sala', details: err.message });
     }
 }
+
 
 //función para modificar una sala
 async function modificarSala(req, res) {
@@ -57,14 +78,25 @@ async function modificarSala(req, res) {
 //funcion para ver todas las salas
 async function verSalas(req, res) {
     try {
-        const salas = await userModel.verSalas();
-        console.log("Resultado de la consulta SQL 2222:", salas);
+        const { id_sala } = req.params;
+        let salas;
+
+        if (id_sala) {
+            salas = await userModel.verSalaPorId(id_sala);
+
+            if (!salas || salas.length === 0) {
+                return res.status(404).json({ error: 'Sala no encontrada' });
+            }
+        } else {
+            salas = await userModel.verTodasLasSalas();
+        }
 
         res.status(200).json(salas);
     } catch (err) {
         res.status(500).json({ error: 'Error al obtener las salas', details: err.message });
     }
 }
+
 
 //fucioon para reservar una sala
 async function reservarSala(req, res) {
@@ -82,6 +114,28 @@ async function reservarSala(req, res) {
     }
 }
 
+//funcion para ver reservaciones
+async function verReservaciones(req, res) {
+    try {
+        const { id_reservacion } = req.params;
+        let reservacion;
+
+        if (id_reservacion) {
+            reservacion = await userModel.verReservacionPorId(id_reservacion);
+
+            if (!reservacion || reservacion.length === 0) {
+                return res.status(404).json({ error: 'No se encontraron reservaciones para la sala indicada' });
+            }
+        } else {
+            reservacion = await userModel.verTodasLasReservaciones();
+        }
+
+        res.status(200).json(reservacion);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener las reservaciones', details: err.message });
+    }
+}
+
 //funcion para ingresar pelicula
 async function ingresarPelicula(req, res) {
     try {
@@ -95,6 +149,16 @@ async function ingresarPelicula(req, res) {
         res.status(201).json({ message: 'Pelicula creada', id });
     } catch (err) {
         res.status(500).json({ error: 'Error al crear la pelicula', details: err.message });
+    }
+}
+
+//funcion para ver peliculas
+async function verPeliculas(req, res) {
+    try {
+        const peliculas = await userModel.verPeliculas();
+        res.status(200).json(peliculas);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener las peliculas', details: err.message });
     }
 }
 
@@ -116,6 +180,28 @@ async function ingresarFuncion(req, res) {
     }
 }
 
+//funcion para ver funciones
+async function verFunciones(req, res) {
+    try {
+        const { id_funcion } = req.params;
+        let funciones;
+
+        if (id_funcion) {
+            funciones = await userModel.verFuncionPorId(id_funcion);
+
+            if (!funciones || funciones.length === 0) {
+                return res.status(404).json({ error: 'Función no encontrada' });
+            }
+        } else {
+            funciones = await userModel.verTodasLasFunciones();
+        }
+
+        res.status(200).json(funciones);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener las funciones', details: err.message });
+    }
+}
+
 
 //funcion para ingresar asiento
 async function ingresarAsiento(req, res) {
@@ -133,6 +219,29 @@ async function ingresarAsiento(req, res) {
     }
 }
 
+//funcion para ver asientos
+async function verAsientos(req, res) {
+    try {
+        const { id_sala } = req.params;
+        let asientos;
+
+        if (id_sala) {
+            asientos = await userModel.verAsientosPorSala(id_sala);
+
+            if (!asientos || asientos.length === 0) {
+                return res.status(404).json({ error: 'No se encontraron asientos para la sala indicada' });
+            }
+        } else {
+            asientos = await userModel.verTodosLosAsientos();
+        }
+
+        res.status(200).json(asientos);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener los asientos', details: err.message });
+    }
+}
+
+
 //funcion de asiento reservado
 async function ingresarAsientoReservado(req, res) {
     try {
@@ -148,6 +257,45 @@ async function ingresarAsientoReservado(req, res) {
         res.status(500).json({ error: 'Error al reservar el asiento', details: err.message });
     }
 }
+
+//funcion para ver asientos reservados
+async function verAsientosReservados(req, res) {
+    try {
+        const { id_reservacion } = req.params;
+        let asientos;
+
+        if (id_reservacion) {
+            asientos = await userModel.verAsientosReservadosPorId(id_reservacion);
+
+            if (!asientos || asientos.length === 0) {
+                return res.status(404).json({ error: 'No se encontraron asientos reservados para la sala indicada' });
+            }
+        } else {
+            asientos = await userModel.verAsientosReservados();
+        }
+
+        res.status(200).json(asientos);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener los asientos reservados', details: err.message });
+    }
+}
+
+//funcion para obtener funciones de una sala especifica
+async function verFuncionesPorSala(req, res) {
+    try {
+        const { id_sala } = req.params;
+        const funciones = await userModel.obtenerFuncionesPorSala(id_sala);
+
+        if (!funciones || funciones.length === 0) {
+            return res.status(404).json({ error: 'No se encontraron funciones para la sala indicada' });
+        }
+
+        res.status(200).json(funciones);
+    } catch (err) {
+        res.status(500).json({ error: 'Error al obtener las funciones', details: err.message });
+    }
+}
+
 
 //función para iniciar sesión
 async function loginUsuario(req, res) {
@@ -174,13 +322,20 @@ async function loginUsuario(req, res) {
 
 module.exports = {
     registrarUsuario,
+    verUsuarios,
     loginUsuario,
     registrarSala,
     modificarSala,
     verSalas,
     reservarSala,
+    verReservaciones,
     ingresarPelicula,
+    verPeliculas,
     ingresarFuncion,
+    verFunciones,
     ingresarAsiento,
+    verAsientos,
     ingresarAsientoReservado,
+    verAsientosReservados,
+    verFuncionesPorSala
 };

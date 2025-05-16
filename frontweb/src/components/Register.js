@@ -5,10 +5,10 @@ import axios from 'axios';
 const Register = () => {
     const [formData, setFormData] = useState({
         nombre: '',
-        usuario: '',
         contrasena: '',
         correo: '',
-        telefono: ''
+        telefono: '',
+        usuario: ''
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);

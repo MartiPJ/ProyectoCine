@@ -7,10 +7,10 @@ import Login from './components/Login';
 import Register from './components/Register'; 
 import Navbar from './components/Navbar';
 import MovieList from './components/MovieList';
-import CreateRoom from './components/CreateRoom';
-import ModifyRoom from './components/ModifyRoom';
+import CreateRoom from './components/admin/CreateRoom';
+import ModifyRoom from './components/admin/ModifyRoom';
 import SeatReservation from './components/SeatReservation';
-import ManageUsers from './components/ManageUsers';
+import ManageUsers from './components/admin/ManageUsers';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -60,7 +60,7 @@ function App() {
             } 
           />
           <Route 
-            path="/reservation/:salaId" 
+            path="/reservaciones/:salaId/:funcionId"  
             element={
               <ProtectedRoute isAuth={isAuth}>
                 <SeatReservation />
