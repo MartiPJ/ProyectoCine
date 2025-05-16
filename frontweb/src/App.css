@@ -248,30 +248,39 @@ label {
   display: flex;
   gap: 10px;
   justify-content: center;
+  flex-direction: row; /* por defecto, pero explícito ayuda */
+  
 }
 
 .seat {
   width: 30px;
   height: 30px;
   border-radius: 5px;
+  margin: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #ccc;
   cursor: pointer;
 }
 
-.seat-available {
+
+
+.sea-available {
   background-color: var(--secondary);
   color: var(--white);
+  
 }
 
-.seat-reserved {
+.seat.reserved {
   background-color: var(--danger);
   color: var(--white);
   cursor: not-allowed;
+  background-color: #f44336;
+  cursor: not-allowed;
 }
 
-.seat-selected {
+.seat.selected {
   background-color: var(--warning);
   color: var(--white);
 }

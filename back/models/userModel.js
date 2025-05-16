@@ -146,11 +146,15 @@ async function crearFuncion({ id_sala, id_pelicula, fecha, hora }) {
     }
 }
 
-//funcion para ver funciones
+// Ver todas las funciones con título de la película
 async function verTodasLasFunciones() {
     const conn = await pool.getConnection();
     try {
-        const sql = 'SELECT * FROM funcion';
+        const sql = `
+            SELECT f.*, p.titulo AS titulo_pelicula
+            FROM funcion f
+            JOIN pelicula p ON f.id_pelicula = p.id_pelicula
+        `;
         const result = await conn.query(sql);
         return result;
     } finally {
@@ -158,17 +162,23 @@ async function verTodasLasFunciones() {
     }
 }
 
-//funcion para ver funciones por id
+// Ver función por ID con título de la película
 async function verFuncionPorId(id_funcion) {
     const conn = await pool.getConnection();
     try {
-        const sql = 'SELECT * FROM funcion WHERE id_funcion = ?';
+        const sql = `
+            SELECT f.*, p.titulo AS titulo_pelicula
+            FROM funcion f
+            JOIN pelicula p ON f.id_pelicula = p.id_pelicula
+            WHERE f.id_funcion = ?
+        `;
         const [result] = await conn.query(sql, [id_funcion]);
         return result;
     } finally {
         conn.release();
     }
 }
+
 
 
 
@@ -209,7 +219,7 @@ async function verAsientosPorSala(id_sala) {
 }
 
 
-//funcion de Asiiento reservado
+//funcion de Asiento reservado
 async function crearAsientoReservado({ id_reservacion, id_asiento }) {
     const conn = await pool.getConnection();
     try {

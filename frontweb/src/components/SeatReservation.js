@@ -143,7 +143,7 @@ const SeatReservation = () => {
         return <div className="error">No se encontró la información de la sala o función</div>;
     }
 
-    // Create seat grid based on room dimensions
+    // Crear una cuadrícula de asientos según las dimensiones de la sala
     const renderSeats = () => {
         const rows = [];
 
@@ -151,7 +151,7 @@ const SeatReservation = () => {
             const rowSeats = [];
 
             for (let columna = 1; columna <= sala.capacidad_columnas; columna++) {
-                // Find the seat in the asientos array
+                // Encuentra el asiento en el  asientos array
                 const asiento = asientos.find(a => a.fila === fila && a.columna === columna);
 
                 if (asiento) {
@@ -166,7 +166,7 @@ const SeatReservation = () => {
                         />
                     );
                 } else {
-                    // Placeholder for seats not in the database
+                    // Marcador de posición para asientos que no están en la base de datos
                     rowSeats.push(
                         <div key={`${fila}-${columna}`} className="seat seat-placeholder" />
                     );
@@ -174,7 +174,7 @@ const SeatReservation = () => {
             }
 
             rows.push(
-                <div key={`row-${fila}`} className="seat-row">
+                <div key={`row-${fila}`} className="seats-row">
                     {rowSeats}
                 </div>
             );
@@ -196,7 +196,7 @@ const SeatReservation = () => {
                 </div>
                 <div className="movie-info">
                     <h2>{funcion.titulo_pelicula}</h2>
-                    <p>Sala: {sala.nombre_sala}</p>
+                    <p>Sala: {sala.nombre}</p>
                     <p>Fecha: {new Date(funcion.fecha).toLocaleDateString()}</p>
                     <p>Hora: {funcion.hora}</p>
                 </div>
@@ -212,7 +212,7 @@ const SeatReservation = () => {
                     {renderSeats()}
                 </div>
 
-                <div className="seat-legend">
+                <div className="seats-legend">
                     <div className="legend-item">
                         <div className="seat"></div>
                         <span>Disponible</span>
