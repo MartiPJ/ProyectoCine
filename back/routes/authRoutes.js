@@ -449,6 +449,8 @@ router.get('/asientos/:id_sala?', authController.verAsientos);
  */
 router.post('/asientoReservado', authController.ingresarAsientoReservado)
 
+router.get('/asientos/:id_asiento/disponible/:id_funcion', authController.verificarDisponibilidadAsiento);
+
 router.get('/asientosReservados/:id_funcion?', authController.verAsientosReservados)
 
 router.get('/funciones/sala/:id_sala?', authController.verFuncionesPorSala)

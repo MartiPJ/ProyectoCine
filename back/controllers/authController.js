@@ -31,6 +31,8 @@ async function verUsuarios(req, res) {
 }
 
 //función para registrar una sala
+// controllers/authController.js (modificar la función registrarSala)
+
 async function registrarSala(req, res) {
     try {
         let { nombre, capacidad_filas, capacidad_columnas } = req.body;
@@ -48,11 +50,23 @@ async function registrarSala(req, res) {
             return res.status(400).json({ error: 'Capacidades deben ser números válidos' });
         }
 
+        // Validar que no sean números negativos
+        if (capacidad_filas <= 0 || capacidad_columnas <= 0) {
+            return res.status(400).json({ error: 'Las capacidades deben ser mayores a cero' });
+        }
+
         const id = await userModel.crearSala({ nombre, capacidad_filas, capacidad_columnas });
 
-        res.status(201).json({ message: 'Sala creada', id });
+        res.status(201).json({ 
+            message: 'Sala creada con asientos generados automáticamente', 
+            id,
+            total_asientos: capacidad_filas * capacidad_columnas
+        });
     } catch (err) {
-        res.status(500).json({ error: 'Error al crear la sala', details: err.message });
+        res.status(500).json({ 
+            error: 'Error al crear la sala y generar asientos', 
+            details: err.message 
+        });
     }
 }
 
@@ -280,6 +294,30 @@ async function verAsientosReservados(req, res) {
     }
 }
 
+// Verificar disponibilidad de un asiento específico
+async function verificarDisponibilidadAsiento(req, res) {
+    try {
+        const { id_asiento, id_funcion } = req.params;
+        
+        if (!id_asiento || !id_funcion) {
+            return res.status(400).json({ error: 'Se requieren id_asiento e id_funcion' });
+        }
+        
+        const disponible = await userModel.verificarDisponibilidadAsiento(id_asiento, id_funcion);
+        
+        res.status(200).json({ 
+            id_asiento,
+            id_funcion,
+            disponible 
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            error: 'Error al verificar disponibilidad del asiento', 
+            details: err.message 
+        });
+    }
+}
+
 //funcion para obtener funciones de una sala especifica
 async function verFuncionesPorSala(req, res) {
     try {
@@ -337,5 +375,6 @@ module.exports = {
     verAsientos,
     ingresarAsientoReservado,
     verAsientosReservados,
+    verificarDisponibilidadAsiento,
     verFuncionesPorSala
 };

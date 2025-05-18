@@ -94,7 +94,7 @@ const SeatReservation = () => {
             const userId = JSON.parse(localStorage.getItem('user')).id_usuario;
             const token = localStorage.getItem('token');
 
-            // Create a reservation
+            // Crear reservación
             const reservationResponse = await axios.post('http://localhost:4000/reservarSala', {
                 id_funcion: funcionId,
                 id_usuario: userId,
@@ -105,7 +105,7 @@ const SeatReservation = () => {
 
             const reservationId = reservationResponse.data.id_reservacion;
 
-            // Reserve each selected seat
+            // Reserva cada asiento seleccionado
             for (const asientoId of selectedAsientos) {
                 await axios.post('http://localhost:4000/asientoReservado', {
                     id_reservacion: reservationId,
@@ -168,7 +168,7 @@ const SeatReservation = () => {
                 } else {
                     // Marcador de posición para asientos que no están en la base de datos
                     rowSeats.push(
-                        <div key={`${fila}-${columna}`} className="seat seat-placeholder" />
+                        <div key={`${fila}-${columna}`} className="seat seat-placeholder seat-available" />
                     );
                 }
             }
@@ -214,7 +214,7 @@ const SeatReservation = () => {
 
                 <div className="seats-legend">
                     <div className="legend-item">
-                        <div className="seat"></div>
+                        <div className="seat seat-available"></div>
                         <span>Disponible</span>
                     </div>
                     <div className="legend-item">

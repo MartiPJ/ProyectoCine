@@ -25,29 +25,157 @@ async function verUsuarios() {
     }   
 }
 
-
-//funcion para crear salas
-async function crearSala({ nombre, capacidad_filas, capacidad_columnas}) {
+// Función para generar asientos automáticamente para una sala
+async function generarAsientosParaSala(id_sala, filas, columnas) {
     const conn = await pool.getConnection();
     try {
-        const sql = 'INSERT INTO sala (nombre ,capacidad_filas, capacidad_columnas) VALUES (?, ?, ?)';
-        const result = await conn.query(sql, [nombre, capacidad_filas, capacidad_columnas]);
-        return Number(result.insertId); // <- Cambio clave aquí
+        await conn.beginTransaction();
+        
+        // Generar todos los asientos
+        const placeholders = [];
+        const values = [];
+        for (let fila = 1; fila <= filas; fila++) {
+            for (let columna = 1; columna <= columnas; columna++) {
+                placeholders.push('(?, ?, ?)');
+                values.push(id_sala, fila, columna);
+            }
+        }
+        
+        // Insertar todos los asientos en una sola consulta
+        if (placeholders.length > 0) {
+            const sql = `INSERT INTO asiento (id_sala, fila, columna) VALUES ${placeholders.join(',')}`;
+            await conn.query(sql, values);
+        }
+        
+        await conn.commit();
+        return true;
+    } catch (error) {
+        await conn.rollback();
+        console.error('Error en generarAsientosParaSala:', error);
+        throw error;
     } finally {
         conn.release();
     }
 }
 
-async function ModificarSala({ id_sala, nombre, capacidad_filas, capacidad_columnas}) {
+// Modificar la función crearSala para que llame a generarAsientosParaSala
+async function crearSala({ nombre, capacidad_filas, capacidad_columnas }) {
     const conn = await pool.getConnection();
     try {
-        const sql = 'UPDATE sala SET nombre = ?, capacidad_filas = ?, capacidad_columnas = ? WHERE id_sala = ?';
-        const result = await conn.query(sql, [nombre, capacidad_filas, capacidad_columnas, id_sala]);
-        return Number(result.insertId); // <- Cambio clave aquí
+        await conn.beginTransaction();
+        
+        // 1. Primero creamos la sala
+        const sql = 'INSERT INTO sala (nombre, capacidad_filas, capacidad_columnas) VALUES (?, ?, ?)';
+        const result = await conn.query(sql, [nombre, capacidad_filas, capacidad_columnas]);
+        const id_sala = Number(result.insertId);
+        
+        // 2. Generamos los asientos automáticamente
+        await generarAsientosParaSala(id_sala, capacidad_filas, capacidad_columnas);
+        
+        await conn.commit();
+        return id_sala;
+    } catch (error) {
+        await conn.rollback();
+        throw error;
     } finally {
         conn.release();
     }
+}
 
+// Modificar la sala y ajustar los asientos
+async function ModificarSala({ id_sala, nombre, capacidad_filas, capacidad_columnas }) {
+    const conn = await pool.getConnection();
+    try {
+        await conn.beginTransaction();
+        
+        // 1. Actualizar los datos de la sala
+        const updateSql = 'UPDATE sala SET nombre = ?, capacidad_filas = ?, capacidad_columnas = ? WHERE id_sala = ?';
+        await conn.query(updateSql, [nombre, capacidad_filas, capacidad_columnas, id_sala]);
+        
+        // 2. Obtener los asientos actuales (corregido)
+        const [asientosActuales] = await conn.query(
+            'SELECT fila, columna FROM asiento WHERE id_sala = ?',
+            [id_sala]
+        );
+        
+        // Convertir a array si es necesario (dependiendo del driver)
+        const asientosArray = Array.isArray(asientosActuales) ? asientosActuales : [asientosActuales];
+        
+        // 3. Determinar qué asientos deben ser eliminados o agregados
+        const asientosNecesarios = new Set();
+        for (let fila = 1; fila <= capacidad_filas; fila++) {
+            for (let columna = 1; columna <= capacidad_columnas; columna++) {
+                asientosNecesarios.add(`${fila},${columna}`);
+            }
+        }
+        
+        const asientosExistentes = new Set(
+            asientosArray.map(a => `${a.fila},${a.columna}`)
+        );
+        
+        // 4. Eliminar asientos que ya no son necesarios
+        const asientosAEliminar = asientosArray.filter(a => 
+            !asientosNecesarios.has(`${a.fila},${a.columna}`)
+        );
+        
+        if (asientosAEliminar.length > 0) {
+            // Usar consulta preparada para evitar SQL injection
+            await conn.query(
+                'DELETE FROM asiento WHERE id_sala = ? AND (fila, columna) IN (?)',
+                [id_sala, asientosAEliminar.map(a => [a.fila, a.columna])]
+            );
+        }
+        
+        // 5. Agregar nuevos asientos necesarios
+        const nuevosAsientos = [];
+        for (let fila = 1; fila <= capacidad_filas; fila++) {
+            for (let columna = 1; columna <= capacidad_columnas; columna++) {
+                if (!asientosExistentes.has(`${fila},${columna}`)) {
+                    nuevosAsientos.push([id_sala, fila, columna]);
+                }
+            }
+        }
+        
+        if (nuevosAsientos.length > 0) {
+            const placeholders = nuevosAsientos.map(() => '(?, ?, ?)').join(',');
+            const values = nuevosAsientos.flat();
+            await conn.query(
+                `INSERT INTO asiento (id_sala, fila, columna) VALUES ${placeholders}`,
+                values
+            );
+        }
+        
+        await conn.commit();
+        return id_sala;
+    } catch (error) {
+        await conn.rollback();
+        console.error('Error en ModificarSala:', error);
+        throw error;
+    } finally {
+        conn.release();
+    }
+}
+
+//funcion para verificar disponibilidad de asiento
+async function verificarDisponibilidadAsiento(id_asiento, id_funcion) {
+    const conn = await pool.getConnection();
+    try {
+        const sql = `
+            SELECT a.* 
+            FROM asiento a
+            LEFT JOIN asientoreservado ar ON a.id_asiento = ar.id_asiento
+            LEFT JOIN reservacion r ON ar.id_reservacion = r.id_reservacion
+            WHERE a.id_asiento = ? 
+            AND r.id_funcion = ?
+            AND r.estado IN ('pendiente', 'confirmada')
+        `;
+        const [result] = await conn.query(sql, [id_asiento, id_funcion]);
+        
+        // Si no hay resultado, el asiento está disponible
+        return result.length === 0;
+    } finally {
+        conn.release();
+    }
 }
 
 // Ver todas las salas
@@ -194,6 +322,8 @@ async function crearAsiento({ id_sala, fila, columna }) {
     }
 }
 
+
+
 //funcion para ver asientos
 async function verTodosLosAsientos() {
     const conn = await pool.getConnection();
@@ -302,5 +432,6 @@ module.exports = {
     crearAsientoReservado,
     verAsientosReservados,
     verAsientosReservadosPorId,
+    verificarDisponibilidadAsiento,
     obtenerFuncionesPorSala
 };
