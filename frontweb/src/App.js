@@ -78,7 +78,7 @@ function App() {
             } 
           />
           <Route 
-            path="/admin/modify-room/:id" 
+            path="/admin/modify-room" 
             element={
               <ProtectedRoute isAuth={isAuth && user?.rol === 'administrador'}>
                 <ModifyRoom />

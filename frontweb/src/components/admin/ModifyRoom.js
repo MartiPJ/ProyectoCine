@@ -7,12 +7,9 @@ const ModifyRoom = () => {
     const [salas, setSalas] = useState([]);
     const [selectedSala, setSelectedSala] = useState(null);
     const [formData, setFormData] = useState({
-        nombreSala: '',
-        capacidadFilas: '',
-        capacidadColumnas: '',
-        tituloPelicula: '',
-        descripcion: '',
-        imagenPoster: null
+        nombre: '',
+        capacidad_filas: '',
+        capacidad_columnas: '',
     });
     const [peliculas, setPeliculas] = useState([]);
     const [error, setError] = useState('');
@@ -62,12 +59,10 @@ const ModifyRoom = () => {
         if (sala) {
             setSelectedSala(sala);
             setFormData({
-                nombreSala: sala.nombre_sala,
-                capacidadFilas: sala.capacidad_filas,
-                capacidadColumnas: sala.capacidad_columnas,
-                tituloPelicula: sala.id_pelicula,
-                descripcion: sala.descripcion || '',
-                imagenPoster: null
+                nombre: sala.nombre_sala,
+                capacidad_filas: sala.capacidad_filas,
+                capacidad_columnas: sala.capacidad_columnas,
+                
             });
         }
     };
@@ -96,29 +91,23 @@ const ModifyRoom = () => {
         }
 
         // Form validation
-        if (!formData.nombreSala || !formData.capacidadFilas || !formData.capacidadColumnas || !formData.tituloPelicula) {
+        if (!formData.nombre || !formData.capacidad_filas || !formData.capacidad_columnas) {
             setError('Todos los campos son obligatorios');
             return;
         }
 
         try {
-            const roomData = new FormData();
-            roomData.append('nombreSala', formData.nombreSala);
-            roomData.append('capacidadFilas', formData.capacidadFilas);
-            roomData.append('capacidadColumnas', formData.capacidadColumnas);
-            roomData.append('tituloPelicula', formData.tituloPelicula);
-            roomData.append('descripcion', formData.descripcion);
-
-            if (formData.imagenPoster) {
-                roomData.append('imagenPoster', formData.imagenPoster);
-            }
-
-            await axios.put(`http://localhost:4000/sala/${selectedSala.id_sala}`, roomData, {
+            await axios.put(`http://localhost:4000/sala/${selectedSala.id_sala}`, {
+                nombre: formData.nombre,
+                capacidad_filas: formData.capacidad_filas,
+                capacidad_columnas: formData.capacidad_columnas
+            }, {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
                 }
             });
+
 
             setSuccess('Sala modificada exitosamente');
 
@@ -134,12 +123,10 @@ const ModifyRoom = () => {
             setTimeout(() => {
                 setSelectedSala(null);
                 setFormData({
-                    nombreSala: '',
-                    capacidadFilas: '',
-                    capacidadColumnas: '',
-                    tituloPelicula: '',
-                    descripcion: '',
-                    imagenPoster: null
+                    nombre: '',
+                    capacidad_filas: '',
+                    capacidad_columnas: '',
+                    
                 });
                 setSuccess('');
             }, 2000);
@@ -163,11 +150,27 @@ const ModifyRoom = () => {
                     id="roomSelect"
                     value={selectedSala ? selectedSala.id_sala : ''}
                     onChange={(e) => handleSalaSelect(e.target.value)}
+                    className="form-control" // Clase Bootstrap o similar
+                    style={{
+                        display: 'block',
+                        width: '100%',
+                        padding: '0.375rem 0.75rem',
+                        fontSize: '1rem',
+                        lineHeight: '1.5',
+                        color: '#495057', // Color de texto oscuro
+                        backgroundColor: '#fff', // Fondo blanco
+                        border: '1px solid #ced4da',
+                        borderRadius: '0.25rem'
+                    }}
                 >
-                    <option value="">-- Seleccionar Sala --</option>
+                    <option value="" disabled>-- Seleccionar Sala --</option>
                     {salas.map(sala => (
-                        <option key={sala.id_sala} value={sala.id_sala}>
-                            {sala.nombre_sala}
+                        <option
+                            key={sala.id_sala}
+                            value={sala.id_sala}
+                            style={{ color: '#333' }} // Color de texto explícito
+                        >
+                            {sala.nombre || `Sala ${sala.id_sala}`} 
                         </option>
                     ))}
                 </select>
@@ -176,93 +179,42 @@ const ModifyRoom = () => {
             {selectedSala && (
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="nombreSala">Nombre de la Sala:</label>
+                        <label htmlFor="nombre">Nombre de la Sala:</label>
                         <input
                             type="text"
-                            id="nombreSala"
-                            name="nombreSala"
-                            value={formData.nombreSala}
+                            id="nombre"
+                            name="nombre"
+                            value={formData.nombre}
                             onChange={handleChange}
                         />
                     </div>
 
                     <div className="form-row">
                         <div className="form-group">
-                            <label htmlFor="capacidadFilas">Capacidad (Filas):</label>
+                            <label htmlFor="capacidad_filas">Capacidad (Filas):</label>
                             <input
                                 type="number"
-                                id="capacidadFilas"
-                                name="capacidadFilas"
+                                id="capacidad_filas"
+                                name="capacidad_filas"
                                 min="1"
                                 max="20"
-                                value={formData.capacidadFilas}
+                                value={formData.capacidad_filas}
                                 onChange={handleChange}
                             />
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="capacidadColumnas">Capacidad (Columnas):</label>
+                            <label htmlFor="capacidad_columnas">Capacidad (Columnas):</label>
                             <input
                                 type="number"
-                                id="capacidadColumnas"
-                                name="capacidadColumnas"
+                                id="capacidad_columnas"
+                                name="capacidad_columnas"
                                 min="1"
                                 max="20"
-                                value={formData.capacidadColumnas}
+                                value={formData.capacidad_columnas}
                                 onChange={handleChange}
                             />
                         </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="tituloPelicula">Título de la Película:</label>
-                        <select
-                            id="tituloPelicula"
-                            name="tituloPelicula"
-                            value={formData.tituloPelicula}
-                            onChange={handleChange}
-                        >
-                            <option value="">Seleccione una película</option>
-                            {peliculas.map(pelicula => (
-                                <option key={pelicula.id_pelicula} value={pelicula.id_pelicula}>
-                                    {pelicula.titulo}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="imagenPoster">Imagen del Póster:</label>
-                        <div className="file-upload-area">
-                            <input
-                                type="file"
-                                id="imagenPoster"
-                                name="imagenPoster"
-                                accept="image/*"
-                                onChange={handleFileChange}
-                            />
-                            <p className="file-hint">Arrastrar imagen aquí o hacer clic</p>
-                        </div>
-                        {selectedSala.imagen_poster && (
-                            <div className="current-poster">
-                                <p>Póster actual:</p>
-                                <img
-                                    src={`http://localhost:4000/uploads/${selectedSala.imagen_poster}`}
-                                    alt="Póster actual"
-                                    style={{ maxWidth: '100px' }}
-                                />
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="form-group">
-                        <label htmlFor="descripcion">Descripción:</label>
-                        <textarea
-                            id="descripcion"
-                            name="descripcion"
-                            value={formData.descripcion}
-                            onChange={handleChange}
-                        />
                     </div>
 
                     <button type="submit" className="btn-primary">Guardar Cambios</button>

@@ -19,6 +19,11 @@ const Navbar = ({ user, onLogout }) => {
                             </Link>
                         </li>
                         <li className="nav-item">
+                            <Link to="/admin/modify-room" className="nav-link">
+                                Modificar Salas
+                            </Link>
+                        </li>
+                        <li className="nav-item">
                             <Link to="/admin/manage-users" className="nav-link">
                                 Administrar Usuarios
                             </Link>
