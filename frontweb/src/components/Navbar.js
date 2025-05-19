@@ -29,6 +29,11 @@ const Navbar = ({ user, onLogout }) => {
                             </Link>
                         </li>
                         <li className="nav-item">
+                            <Link to="/admin/create-movie" className="nav-link">
+                                Crear Película
+                            </Link>
+                        </li>
+                        <li className="nav-item">
                             <Link to="/admin/manage-users" className="nav-link">
                                 Administrar Usuarios
                             </Link>
