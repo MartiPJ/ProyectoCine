@@ -91,43 +91,67 @@ const SeatReservation = () => {
         }
 
         try {
-            const userId = JSON.parse(localStorage.getItem('user')).id_usuario;
-            const token = localStorage.getItem('token');
+            const userData = JSON.parse(localStorage.getItem('user'));
+            const token = userData.token;
 
-            // Crear reservación
-            const reservationResponse = await axios.post('http://localhost:4000/reservarSala', {
-                id_funcion: funcionId,
-                id_usuario: userId,
-                fecha: new Date().toISOString().split('T')[0]
-            }, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            // Decodificar el token para obtener el ID
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const userId = payload.id;
 
-            const reservationId = reservationResponse.data.id_reservacion;
+            const reservationData = {
+                id_usuario: Number(userId),
+                id_sala: Number(salaId),
+                id_funcion: Number(funcionId),
+                estado: 'confirmado',
+                fecha: new Date().toISOString().replace('T', ' ').slice(0, 19)
+            };
 
-            // Reserva cada asiento seleccionado
+            console.log("Datos a enviar:", reservationData);
+
+            const reservationResponse = await axios.post(
+                'http://localhost:4000/reservarSala',
+                reservationData,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+
+            console.log("Respuesta de reservarSala:", reservationResponse.data);
+            const reservationId = reservationResponse.data.id; // Cambia id_reservacion por id
+
+            // Reserva cada asiento seleccionado (corregido: dentro del bucle)
             for (const asientoId of selectedAsientos) {
-                await axios.post('http://localhost:4000/asientoReservado', {
-                    id_reservacion: reservationId,
-                    id_asiento: asientoId
-                }, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                await axios.post(
+                    'http://localhost:4000/asientoReservado',
+                    {
+                        id_reservacion: Number(reservationId),  // Usa el nombre exacto que espera el backend
+                        id_asiento: Number(asientoId)           // Asegúrate que sea número
+                    },
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'  // Añade esto si no está
+                        }
+                    }
+                );
             }
 
             setSuccess('¡Reserva realizada con éxito!');
             setSelectedAsientos([]);
 
             // Refresh reserved seats list
-            const reservadosResponse = await axios.get(`http://localhost:4000/asientosReservados/${funcionId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
+            const reservadosResponse = await axios.get(
+                `http://localhost:4000/asientosReservados/${funcionId}`,
+                { headers: { 'Authorization': `Bearer ${token}` } }
+            );
             setAsientosReservados(reservadosResponse.data);
 
-            // Redirect to confirmation page after 2 seconds
-            setTimeout(() => {
-                navigate('/reserva-confirmada');
-            }, 2000);
+            // setTimeout(() => {
+            //     navigate('/reserva-confirmada');
+            // }, 2000);
 
         } catch (err) {
             console.error('Error making reservation:', err);
