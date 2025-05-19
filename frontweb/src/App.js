@@ -10,6 +10,7 @@ import MovieList from './components/MovieList';
 import CreateRoom from './components/admin/CreateRoom';
 import ModifyRoom from './components/admin/ModifyRoom';
 import CreateFunction from './components/admin/CreateFunction';
+import ModifyFunction from './components/admin/ModifyFunction';
 import CreateMovie from './components/admin/CreateMovie';
 import SeatReservation from './components/SeatReservation';
 import ManageUsers from './components/admin/ManageUsers';
@@ -92,6 +93,14 @@ function App() {
             element={
               <ProtectedRoute isAuth={isAuth && user?.rol === 'administrador'}>
                 <CreateFunction />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/modify-function"
+            element={
+              <ProtectedRoute isAuth={isAuth && user?.rol === 'administrador'}>
+                <ModifyFunction />
               </ProtectedRoute>
             }
           />

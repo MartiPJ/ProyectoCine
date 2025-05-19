@@ -216,6 +216,45 @@ async function verFunciones(req, res) {
     }
 }
 
+// Función para modificar función
+async function modificarFuncion(req, res) {
+    try {
+        const { id_funcion } = req.params;
+        const { id_pelicula, id_sala, fecha, hora } = req.body;
+
+        if (!id_funcion || !id_pelicula || !id_sala || !fecha || !hora) {
+            return res.status(400).json({ error: 'Faltan datos requeridos' });
+        }
+
+        // Aseguramos que los IDs sean números
+        const funcionData = {
+            id_funcion: parseInt(id_funcion),
+            id_pelicula: parseInt(id_pelicula),
+            id_sala: parseInt(id_sala),
+            fecha,
+            hora
+        };
+
+        const result = await userModel.ModificarFuncion(funcionData);
+
+        // Adaptación para MariaDB - verificación de éxito
+        if (!result || (result.affectedRows !== undefined && result.affectedRows === 0)) {
+            return res.status(404).json({ error: 'Función no encontrada o no se realizaron cambios' });
+        }
+
+        res.status(200).json({
+            message: 'Función modificada correctamente',
+            result: {
+                affectedRows: Number(result.affectedRows),
+                // otras propiedades que necesites
+            }
+        });
+    } catch (err) {
+        console.error('Error al modificar función:', err);
+        res.status(500).json({ error: 'Error al modificar la función', details: err.message });
+    }
+}
+
 
 //funcion para ingresar asiento
 async function ingresarAsiento(req, res) {
@@ -371,6 +410,7 @@ module.exports = {
     verPeliculas,
     ingresarFuncion,
     verFunciones,
+    modificarFuncion,
     ingresarAsiento,
     verAsientos,
     ingresarAsientoReservado,

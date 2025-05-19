@@ -395,6 +395,8 @@ router.post('/funcion', authController.ingresarFuncion)
 
 router.get('/funciones/:id_funcion?', authController.verFunciones);
 
+router.put('/funcion/:id_funcion', authController.modificarFuncion);
+
 /**
  * @swagger
  * /asiento:

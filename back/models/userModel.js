@@ -312,7 +312,17 @@ async function verFuncionPorId(id_funcion) {
     }
 }
 
-
+//Modificar la funcion de pelicula
+async function ModificarFuncion({ id_funcion, id_sala, id_pelicula, fecha, hora }) {
+    const conn = await pool.getConnection();
+    try {
+        const sql = 'UPDATE funcion SET id_sala = ?, id_pelicula = ?, fecha = ?, hora = ? WHERE id_funcion = ?';
+        const result = await conn.query(sql, [id_sala, id_pelicula, fecha, hora, id_funcion]);
+        return { affectedRows: Number(result.affectedRows) };
+    } finally {
+        conn.release();
+    }
+}
 
 
 //funcion para crear asiento
@@ -431,6 +441,7 @@ module.exports = {
     crearFuncion,
     verTodasLasFunciones,
     verFuncionPorId,
+    ModificarFuncion,
     crearAsiento,
     verTodosLosAsientos,
     verAsientosPorSala,
