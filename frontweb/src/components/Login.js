@@ -83,7 +83,7 @@ const Login = ({ onLogin }) => {
                 </div>
 
                 <div className="form-group">
-                    <Link to="/usuarios">
+                    <Link to="/register">
                         <button type="button" className="btn btn-success btn-block">
                             Crear Cuenta
                         </button>

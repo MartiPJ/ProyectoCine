@@ -238,7 +238,7 @@ const SeatReservation = () => {
 
                 <div className="seats-legend">
                     <div className="legend-item">
-                        <div className="seat seat-available"></div>
+                        <div className="seat "></div>
                         <span>Disponible</span>
                     </div>
                     <div className="legend-item">
