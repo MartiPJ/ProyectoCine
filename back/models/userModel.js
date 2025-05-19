@@ -110,13 +110,18 @@ async function ModificarSala({ id_sala, nombre, capacidad_filas, capacidad_colum
         }
         
         const asientosExistentes = new Set(
-            asientosArray.map(a => `${a.fila},${a.columna}`)
+            asientosArray
+                .filter(a => a && a.fila !== undefined && a.columna !== undefined)
+                .map(a => `${a.fila},${a.columna}`)
         );
+
         
         // 4. Eliminar asientos que ya no son necesarios
-        const asientosAEliminar = asientosArray.filter(a => 
+        const asientosAEliminar = asientosArray.filter(a =>
+            a && a.fila !== undefined && a.columna !== undefined &&
             !asientosNecesarios.has(`${a.fila},${a.columna}`)
         );
+
         
         if (asientosAEliminar.length > 0) {
             // Usar consulta preparada para evitar SQL injection
