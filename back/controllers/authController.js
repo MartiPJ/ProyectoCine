@@ -30,6 +30,61 @@ async function verUsuarios(req, res) {
     }
 }
 
+
+// Controlador para actualizar usuario
+async function actualizarUsuario(req, res) {
+    try {
+        const { id_usuario } = req.params;
+        const { nombre, correo, telefono, rol } = req.body;
+
+        if (!id_usuario || !nombre || !correo || !telefono || !rol) {
+            return res.status(400).json({ error: 'Faltan datos requeridos' });
+        }
+
+        const result = await userModel.actualizarUsuario({
+            id_usuario: parseInt(id_usuario),
+            nombre,
+            correo,
+            telefono,
+            rol
+        });
+
+        if (!result || result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado o sin cambios' });
+        }
+
+        res.status(200).json({ message: 'Usuario actualizado correctamente', result });
+    } catch (err) {
+        res.status(500).json({ error: 'Error al actualizar el usuario', details: err.message });
+    }
+}
+
+// ...existing code...
+
+module.exports = {
+    registrarUsuario,
+    verUsuarios,
+    loginUsuario,
+    registrarSala,
+    modificarSala,
+    verSalas,
+    reservarSala,
+    verReservaciones,
+    ingresarPelicula,
+    verPeliculas,
+    ingresarFuncion,
+    verFunciones,
+    modificarFuncion,
+    ingresarAsiento,
+    verAsientos,
+    ingresarAsientoReservado,
+    verAsientosReservados,
+    verificarDisponibilidadAsiento,
+    verFuncionesPorSala,
+    actualizarUsuario // <-- Agrega esto
+};
+// ...existing code...
+
 //función para registrar una sala
 // controllers/authController.js (modificar la función registrarSala)
 
@@ -400,6 +455,7 @@ async function loginUsuario(req, res) {
 module.exports = {
     registrarUsuario,
     verUsuarios,
+    actualizarUsuario,
     loginUsuario,
     registrarSala,
     modificarSala,

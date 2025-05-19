@@ -63,7 +63,7 @@ const ManageUsers = () => {
         setFormData({
             nombre: user.nombre || '',
             contrasena: '', // No mostramos la contraseña actual por seguridad
-            correo: user.email || '',
+            correo: user.correo || '',
             telefono: user.telefono || '',
             rol: user.rol || 'usuario'
         });
@@ -71,28 +71,29 @@ const ManageUsers = () => {
     };
 
     const validateForm = () => {
-        if (!formData.nombre.trim()) {
+        // Usa los mismos nombres que en tu estado (formData)
+        if (!formData.nombre || !formData.nombre.toString().trim()) {
             setError('El nombre es obligatorio');
             return false;
         }
 
-        if (!formData.email.trim()) {
-            setError('El email es obligatorio');
+        if (!formData.correo.trim()) {  // Cambiado de correo a correo
+            setError('El correo es obligatorio');
             return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            setError('El formato del email no es válido');
+        if (!emailRegex.test(formData.correo)) {  // Cambiado de correo a correo
+            setError('El formato del correo no es válido');
             return false;
         }
 
-        if (!formData.telefono || isNaN(formData.telefono)) {
-            setError("El teléfono es obligatorio y debe ser un número");
+        if (!formData.telefono || !/^\d+$/.test(formData.telefono)) {
+            setError("El teléfono debe contener solo números");
             return false;
         }
 
-        if (!isEditing && !formData.password) {
+        if (!isEditing && !formData.contrasena) {  // Cambiado de contrasena a contrasena
             setError('La contraseña es obligatoria para nuevos usuarios');
             return false;
         }
@@ -114,27 +115,40 @@ const ManageUsers = () => {
 
             if (isEditing) {
                 // Actualizar usuario existente
-                const updateData = { ...formData };
-                if (!updateData.password) {
-                    delete updateData.password; // No enviar la contraseña si está vacía
+                const updateData = {
+                    nombre: formData.nombre,
+                    correo: formData.correo,
+                    telefono: formData.telefono,
+                    rol: formData.rol
+                };
+
+                // Solo incluir la contraseña si se proporcionó
+                if (formData.contrasena) {
+                    updateData.contrasena = formData.contrasena;
                 }
 
-                // Este endpoint es hipotético, ajústalo según tu API
-                await axios.put(`http://localhost:4000/usuarios/${selectedUser._id}`, updateData);
+                await axios.put(`http://localhost:4000/usuarios/${selectedUser.id_usuario}`, updateData);
                 setSuccessMessage('Usuario actualizado correctamente');
             } else {
                 // Crear nuevo usuario
-                await axios.post('http://localhost:4000/usuarios', formData);
+                const newUser = {
+                    nombre: formData.nombre,
+                    correo: formData.correo,
+                    telefono: formData.telefono,
+                    rol: formData.rol,
+                    contrasena: formData.contrasena
+                };
+                await axios.post('http://localhost:4000/usuarios', newUser);
                 setSuccessMessage('Usuario creado correctamente');
             }
 
             setSuccess(true);
             resetForm();
-            fetchUsers(); // Actualizar la lista de usuarios
+            fetchUsers();
 
         } catch (err) {
             console.error('Error al guardar usuario:', err);
-            setError(err.response?.data?.mensaje || 'Error al procesar la solicitud');
+            setError(err.response?.data?.message || 'Error al procesar la solicitud');
         } finally {
             setLoading(false);
         }
@@ -304,7 +318,7 @@ const ManageUsers = () => {
                                 <thead>
                                     <tr>
                                         <th>Nombre</th>
-                                        <th>Email</th>
+                                        <th>correo</th>
                                         <th>Telefono</th>
                                         <th>Rol</th>
                                         

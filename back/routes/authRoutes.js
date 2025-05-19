@@ -81,6 +81,8 @@ router.post('/usuarios', authController.registrarUsuario);
 
 router.get('/usuarios', authController.verUsuarios);
 
+router.put('/usuarios/:id_usuario', authController.actualizarUsuario);
+
 /**
  * @swagger
  * /login:

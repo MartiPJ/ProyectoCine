@@ -25,6 +25,26 @@ async function verUsuarios() {
     }   
 }
 
+
+
+// Actualizar un usuario
+async function actualizarUsuario({ id_usuario, nombre, correo, telefono, rol }) {
+    const conn = await pool.getConnection();
+    try {
+        const sql = `
+            UPDATE usuarios 
+            SET nombre = ?, correo = ?, telefono = ?, rol = ?
+            WHERE id_usuario = ?
+        `;
+        const result = await conn.query(sql, [nombre, correo, telefono, rol, id_usuario]);
+        return { affectedRows: Number(result.affectedRows) };
+    } finally {
+        conn.release();
+    }
+}
+
+// ...existing code...
+
 // Función para generar asientos automáticamente para una sala
 async function generarAsientosParaSala(id_sala, filas, columnas) {
     const conn = await pool.getConnection();
@@ -428,6 +448,7 @@ async function obtenerFuncionesPorSala(id_sala) {
 module.exports = {
     crearUsuario,
     verUsuarios,
+    actualizarUsuario,
     buscarUsuarioPorNombre,
     crearSala,
     ModificarSala,
