@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -28,7 +29,7 @@ const Register = () => {
 
         try {
             // By default, create users as regular clients
-            await axios.post('http://localhost:4000/usuarios', {
+            await axios.post(`${apiUrl}/usuarios`, {
                 ...formData,
                 rol: 'usuario'  // Default role is regular user
             });

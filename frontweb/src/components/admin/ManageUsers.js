@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
@@ -27,7 +28,7 @@ const ManageUsers = () => {
         try {
             setLoading(true);
             // Este endpoint es hipotético, ajústalo según tu API
-            const response = await axios.get('http://localhost:4000/usuarios');
+            const response = await axios.get(`${apiUrl}/usuarios`);
             setUsers(response.data || []);
 
         } catch (err) {
@@ -127,7 +128,7 @@ const ManageUsers = () => {
                     updateData.contrasena = formData.contrasena;
                 }
 
-                await axios.put(`http://localhost:4000/usuarios/${selectedUser.id_usuario}`, updateData);
+                await axios.put(`${apiUrl}/usuarios/${selectedUser.id_usuario}`, updateData);
                 setSuccessMessage('Usuario actualizado correctamente');
             } else {
                 // Crear nuevo usuario
@@ -138,7 +139,7 @@ const ManageUsers = () => {
                     rol: formData.rol,
                     contrasena: formData.contrasena
                 };
-                await axios.post('http://localhost:4000/usuarios', newUser);
+                await axios.post(`${apiUrl}/usuarios`, newUser);
                 setSuccessMessage('Usuario creado correctamente');
             }
 
@@ -162,7 +163,7 @@ const ManageUsers = () => {
         try {
             setLoading(true);
             // Este endpoint es hipotético, ajústalo según tu API
-            await axios.delete(`http://localhost:4000/usuarios/${userId}`);
+            await axios.delete(`${apiUrl}/usuarios/${userId}`);
 
             setSuccessMessage('Usuario eliminado correctamente');
             setSuccess(true);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ModifyFunction = () => {
     const navigate = useNavigate();
@@ -28,17 +29,17 @@ const ModifyFunction = () => {
         const fetchData = async () => {
             try {
                 const [funcionesRes, salasRes, peliculasRes] = await Promise.all([
-                    axios.get('http://localhost:4000/funciones', {
+                    axios.get(`${apiUrl}/funciones`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     }),
-                    axios.get('http://localhost:4000/salas', {
+                    axios.get(`${apiUrl}/salas`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
                     }),
-                    axios.get('http://localhost:4000/peliculas', {
+                    axios.get(`${apiUrl}/peliculas`, {
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
                         }
@@ -106,7 +107,7 @@ const ModifyFunction = () => {
                 hora: formData.hora.length === 5 ? `${formData.hora}:00` : formData.hora
             };
 
-            await axios.put(`http://localhost:4000/funcion/${selectedFuncion.id_funcion}`, funcionData, {
+            await axios.put(`${apiUrl}/funcion/${selectedFuncion.id_funcion}`, funcionData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -115,7 +116,7 @@ const ModifyFunction = () => {
             setSuccess('Función modificada exitosamente');
 
             // Refresh functions list
-            const response = await axios.get('http://localhost:4000/funciones', {
+            const response = await axios.get(`${apiUrl}/funciones`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

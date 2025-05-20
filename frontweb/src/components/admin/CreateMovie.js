@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const CreateMovie = () => {
     const navigate = useNavigate();
@@ -43,7 +44,7 @@ const CreateMovie = () => {
             };
 
             console.log('Movie Data:', movieData);
-            await axios.post('http://localhost:4000/pelicula', movieData, {
+            await axios.post(`${apiUrl}/pelicula`, movieData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

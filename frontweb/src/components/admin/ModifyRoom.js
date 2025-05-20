@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const ModifyRoom = () => {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ const ModifyRoom = () => {
         // Fetch rooms
         const fetchSalas = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/salas', {
+                const response = await axios.get(`${apiUrl}/salas`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -39,7 +40,7 @@ const ModifyRoom = () => {
         // Fetch movies
         const fetchPeliculas = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/peliculas', {
+                const response = await axios.get(`${apiUrl}/peliculas`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -75,12 +76,6 @@ const ModifyRoom = () => {
         });
     };
 
-    const handleFileChange = (e) => {
-        setFormData({
-            ...formData,
-            imagenPoster: e.target.files[0]
-        });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -97,7 +92,7 @@ const ModifyRoom = () => {
         }
 
         try {
-            await axios.put(`http://localhost:4000/sala/${selectedSala.id_sala}`, {
+            await axios.put(`${apiUrl}/sala/${selectedSala.id_sala}`, {
                 nombre: formData.nombre,
                 capacidad_filas: formData.capacidad_filas,
                 capacidad_columnas: formData.capacidad_columnas
@@ -112,7 +107,7 @@ const ModifyRoom = () => {
             setSuccess('Sala modificada exitosamente');
 
             // Refresh rooms list
-            const response = await axios.get('http://localhost:4000/salas', {
+            const response = await axios.get(`${apiUrl}/salas`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const CreateFunction = () => {
     const navigate = useNavigate();
@@ -24,8 +25,8 @@ const CreateFunction = () => {
         const fetchData = async () => {
             try {
                 const [resSalas, resPeliculas] = await Promise.all([
-                    axios.get('http://localhost:4000/salas'),
-                    axios.get('http://localhost:4000/peliculas')
+                    axios.get(`${apiUrl}/salas`),
+                    axios.get(`${apiUrl}/peliculas`)
                 ]);
 
                 setSalas(resSalas.data);
@@ -55,7 +56,7 @@ const CreateFunction = () => {
         }
 
         try {
-            const selectedPelicula = peliculas.find(p => p.id_pelicula.toString() === formData.id_pelicula);
+            
             const fechaFormateada = new Date(formData.fecha).toISOString().split("T")[0];
             const funcionData = {
                 id_sala: parseInt(formData.id_sala),
@@ -67,7 +68,7 @@ const CreateFunction = () => {
             };
 
             console.log('Función Data:', funcionData);
-            await axios.post('http://localhost:4000/funcion', funcionData, {
+            await axios.post(`${apiUrl}/funcion`, funcionData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

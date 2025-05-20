@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const CreateRoom = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const CreateRoom = () => {
         // Fetch available movies
         const fetchPeliculas = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/peliculas');
+                const response = await axios.get(`${apiUrl}/peliculas`);
                 setPeliculas(response.data);
             } catch (err) {
                 console.error('Error fetching movies:', err);
@@ -58,7 +59,7 @@ const CreateRoom = () => {
                 capacidad_columnas: parseInt(formData.capacidad_columnas, 10),
             };
 
-            await axios.post('http://localhost:4000/sala', roomData, {
+            await axios.post(`${apiUrl}/sala`, roomData, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

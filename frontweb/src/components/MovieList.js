@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const MovieList = () => {
     const [salas, setSalas] = useState([]);
@@ -14,7 +15,7 @@ const MovieList = () => {
     useEffect(() => {
         const fetchSalas = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/salas', {
+                const response = await axios.get(`${apiUrl}/salas`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
@@ -35,7 +36,7 @@ const MovieList = () => {
         try {
             setLoading(true);
             // Obtener las funciones para esta sala usando el nuevo endpoint
-            const response = await axios.get(`http://localhost:4000/funciones/sala/${salaId}`, {
+            const response = await axios.get(`${apiUrl}/funciones/sala/${salaId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

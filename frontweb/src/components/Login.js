@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const Login = ({ onLogin }) => {
     const [formData, setFormData] = useState({
@@ -24,7 +25,7 @@ const Login = ({ onLogin }) => {
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:4000/login', formData);
+            const response = await axios.post(`${apiUrl}/login`, formData);
 
             if (response.data && response.data.token) {
                 onLogin(response.data);

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const SeatReservation = () => {
     const { salaId, funcionId } = useParams();
@@ -28,26 +29,26 @@ const SeatReservation = () => {
                 console.log("funcionId:", funcionId);
                 console.log("Salaid:", salaId);
                 // Fetch sala details
-                const salaResponse = await axios.get(`http://localhost:4000/salas/${salaId}`, {
+                const salaResponse = await axios.get(`${apiUrl}/salas/${salaId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setSala(salaResponse.data);
 
                 
                 // Fetch function details
-                const funcionResponse = await axios.get(`http://localhost:4000/funciones/${funcionId}`, {
+                const funcionResponse = await axios.get(`${apiUrl}/funciones/${funcionId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setFuncion(funcionResponse.data);
 
                 // Fetch seats for this room
-                const asientosResponse = await axios.get(`http://localhost:4000/asientos/${salaId}`, {
+                const asientosResponse = await axios.get(`${apiUrl}/asientos/${salaId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setAsientos(asientosResponse.data);
 
                 // Fetch reserved seats for this function
-                const reservadosResponse = await axios.get(`http://localhost:4000/asientosReservados/${funcionId}`, {
+                const reservadosResponse = await axios.get(`${apiUrl}/asientosReservados/${funcionId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setAsientosReservados(reservadosResponse.data);
@@ -109,7 +110,7 @@ const SeatReservation = () => {
             console.log("Datos a enviar:", reservationData);
 
             const reservationResponse = await axios.post(
-                'http://localhost:4000/reservarSala',
+                `${apiUrl}/reservarSala`,
                 reservationData,
                 {
                     headers: {
@@ -125,7 +126,7 @@ const SeatReservation = () => {
             // Reserva cada asiento seleccionado (corregido: dentro del bucle)
             for (const asientoId of selectedAsientos) {
                 await axios.post(
-                    'http://localhost:4000/asientoReservado',
+                    `${apiUrl}/asientoReservado`,
                     {
                         id_reservacion: Number(reservationId),  // Usa el nombre exacto que espera el backend
                         id_asiento: Number(asientoId)           // Asegúrate que sea número
@@ -144,7 +145,7 @@ const SeatReservation = () => {
 
             // Refresh reserved seats list
             const reservadosResponse = await axios.get(
-                `http://localhost:4000/asientosReservados/${funcionId}`,
+                `${apiUrl}/asientosReservados/${funcionId}`,
                 { headers: { 'Authorization': `Bearer ${token}` } }
             );
             setAsientosReservados(reservadosResponse.data);
@@ -213,7 +214,7 @@ const SeatReservation = () => {
                 <div className="movie-poster">
                     {sala.imagen_poster && (
                         <img
-                            src={`http://localhost:4000/uploads/${sala.imagen_poster}`}
+                            src={`${apiUrl}/uploads/${sala.imagen_poster}`}
                             alt="Poster"
                         />
                     )}
